@@ -1,0 +1,14 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+#include <climits>
+
+void infoBlokje() {
+    cout << "Door Koen van der Mije(s4809033) en Dylan Kusters (s4912926) " << endl 
+    << "Begonnen met de studieinformatica aan de "
+    << "Universiteit Leiden in september 2025. "<< endl
+    << "Opdracht 3 voor het vak Programmeermethoden. " << endl 
+    << "Deadline : 10 november. " << endl 
+    << "Deze code doet blabla" << endl; }
+
+    
