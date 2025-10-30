@@ -11,4 +11,89 @@ void infoBlokje() {
     << "Deadline : 10 november. " << endl 
     << "Deze code doet blabla" << endl; }
 
+char maakKleineLetter(char a){
+    if (a < 'Z'){
+        return a + 32;
+    }else{
+        return a;
+    }
+}
+
+char optieInlezen(){
+    char k = cin.get();
+    while (k == '\n') {
+        k = cin.get();
+    }
+    return k;
+}
+
+int leesGetal(){
+    int getalbuffer = 0;
+    char k;
+    while (!cin.eof()) {
+        k = cin.get();
+        if (k >= '0' && k <= '9'){
+            getalbuffer = (getalbuffer * 10) + (k - '0');
+        } else if (getalbuffer >= 9999){
+            getalbuffer = 9999;
+        }
+    }
+    return getalbuffer;
+}
     
+int submenu(){
+    char keuze;
+    while (true){
+        cout << "Kies een optie: s[C]hoon, [R]andom, [T]ekenen of [S]toppen." << endl;
+        keuze = optieInlezen();
+        keuze = maakKleineLetter(keuze);
+        switch (keuze){
+            case 's': 
+            cout << "Je hebt optie S gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
+            return 1;
+            case 't':
+            cout << "Je hebt optie T gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
+            return 0; 
+            default:
+            cout<<"Deze optie doet nog niks." << endl;
+                }
+            }
+}
+
+
+int menu(){
+    char keuze;
+    while (true){
+        cout << "Kies een optie: s[C]hoon, [R]andom, [T]ekenen of [S]toppen." << endl;
+        keuze = optieInlezen();
+        keuze = maakKleineLetter(keuze);
+        switch (keuze){
+            case 's':
+            cout << "Je hebt optie S gekozen, Het programma wordt gestopt." << endl;
+            return 1;
+
+            case 'c':
+            cout << "Je hebt optie C gekozen." << endl;
+            break;
+
+            case 'r':
+            cout << "Je hebt optie R gekozen." << endl;
+            break;
+
+            case 't':
+            cout << "Je hebt optie T gekozen." << endl;
+            while (!(submenu() == 0)) {
+                 cout  << "Je hebt nu een ander karakter gekozen. Je blijft nu in de subloop." << endl;
+            }
+    }
+}}
+
+
+
+int main(){
+    infoBlokje();
+    if (menu() == 1){
+        return 1;
+    }
+}
+
