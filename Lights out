@@ -42,20 +42,19 @@ int leesGetal(){
 }
     
 int submenu(){
-    char keuze;
+    char k;
     while (true){
         cout << "Kies een optie: s[C]hoon, [R]andom, [T]ekenen of [S]toppen. (submenu)" << endl;
-        keuze = optieInlezen();
-        keuze = maakKleineLetter(keuze);
-        switch (keuze){
+        k = optieInlezen();
+        k = maakKleineLetter(k);
+        cout << "Dit is je keuze:" << k << endl;
+        switch (k){
             case 's': 
             cout << "Je hebt optie S gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
-            return 1;
+            return 0;
             case 't':
             cout << "Je hebt optie T gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
             return 0; 
-            default:
-            cout<<"Deze optie doet nog niks." << endl;
                 }
             }
 }
@@ -74,11 +73,11 @@ int menu(){
 
             case 'c':
             cout << "Je hebt optie C gekozen." << endl;
-            return 0;
+            break;
 
             case 'r':
             cout << "Je hebt optie R gekozen." << endl;
-            return 0;
+            break;
 
             case 't':
             cout << "Je hebt optie T gekozen." << endl;
