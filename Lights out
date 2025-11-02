@@ -1,7 +1,18 @@
+// Deze code is gemaakt door Koen van der Mije(s4809033) en Dylan Kusters (s4912926).
+// 
+
 #include <iostream>
 #include <fstream>
 using namespace std;
 #include <climits>
+
+int hoogte = 5;
+int breedte = 5;
+int lamppercentage = 50;
+char symboolLampAan = 'X';
+char symboolLampUit = '.';
+char cursorSymbool;
+bool torusModus = false;
 
 void infoBlokje() {
     cout << "Door Koen van der Mije(s4809033) en Dylan Kusters (s4912926) " << endl 
@@ -10,60 +21,183 @@ void infoBlokje() {
     << "Opdracht 3 voor het vak Programmeermethoden. " << endl 
     << "Deadline : 10 november. " << endl 
     << "Deze code doet blabla" << endl; }
-
+//maakt een grote letter een kleine letter.
 char maakKleineLetter(char a){
-    if (a < 'Z'){
-        return a + 32;
+    if (a >= 'A' && a <= 'Z'){
+        return a + ('a' - 'A');
     }else{
         return a;
     }
 }
-
+//Leest een karakter in
 char optieInlezen(){
     char k = cin.get();
     while (k == '\n') {
         k = cin.get();
     }
+    cin.ignore(INT_MAX, '\n'); 
+    // Als er meerdere karakters zijn ingevoerd, pakt het alleen de eerste.
     return k;
 }
-
-int leesGetal(){
+//Leest getallen in.
+int leesGetal() {
     int getalbuffer = 0;
+    bool heeftCijfer = false;
     char k;
-    while (!cin.eof()) {
-        k = cin.get();
-        if (k >= '0' && k <= '9'){
+
+    while (true) {
+        if (!cin.get(k)) { 
+            break;
+        }
+
+        if (k >= '0' && k <= '9') {
+            heeftCijfer = true;
             getalbuffer = (getalbuffer * 10) + (k - '0');
-        } else if (getalbuffer >= 9999){
-            getalbuffer = 9999;
+            if (getalbuffer > 9999) {
+                getalbuffer = 9999; 
+            }
+        } 
+        else {
+            if (heeftCijfer) break;  
+            else continue;
         }
     }
+
     return getalbuffer;
 }
-    
-int submenu(){
+
+
+
+int tekensubmenu(){
     char k;
     while (true){
-        cout << "Kies een optie: s[C]hoon, [R]andom, [T]ekenen of [S]toppen. (submenu)" << endl;
+        cout << "Tekenmenu: Kies een optie: [T}erug, s[C]hoon, [R]andom, [O]mschakelen of [G]enereer." << endl;
         k = optieInlezen();
         k = maakKleineLetter(k);
-        cout << "Dit is je keuze:" << k << endl;
         switch (k){
-            case 's': 
-            cout << "Je hebt optie S gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
-            return 0;
-            case 't':
+            case 'c':
+            cout << "Je hebt optie C gekozen" << endl;
+            break;
+            case 'r':
+            cout << "Je hebt optie R gekozen" << endl;
+            break;
+            case 'o':
+            cout << "Je hebt optie T gekozen. " << endl;
+            break;
+            case 'g':
+            cout << "Je hebt optie G gekozen" << endl;
+            break;
+            case 't': 
             cout << "Je hebt optie T gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
-            return 0; 
+            return 0;
+
                 }
             }
 }
+int puzzelmenu(){
+    char k;
+    while (true){
+        cout << "Puzzelmenu: Kies een optie: [T]erug, [V]olg, [L]os op, [A]fspelen of [D]oe zet." << endl;
+        k = optieInlezen();
+        k = maakKleineLetter(k);
+        switch (k){
+            case 't': 
+            cout << "Je hebt optie T gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
+            return 0;
+            case 'v':
+            cout << "Je hebt optie V gekozen." << endl;
+            break;
+            case 'l':
+            cout << "Je hebt optie L gekozen." << endl;
+            break;
+            case 'a':
+            cout << "Je hebt optie A gekozen." << endl;
+            break;
+            case 'd':
+            cout << "Je hebt optie D gekozen." << endl;
+            break;
+                }
+            }
+}
+int parametermenu(){
+    char k; 
+    while (true){
+        cout << "Parametermenu: Kies een optie: [T]erug, [H]oogte, [B]reedte, [P]ercentage lampen, [K]arakters, [D]oorlopend bord of [C]ursor-modus" << endl;
+        k = optieInlezen();
+        k = maakKleineLetter(k);
+        switch(k){
+            case 't': 
+            cout << "Je hebt optie T gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
+            return 0;
 
+            case 'h':
+            cout << "Kies de hoogte van de puzzel." << endl;
+            hoogte = leesGetal();
+            if (hoogte > 20 || hoogte < 0){
+                hoogte = 5;
+            }cout << "Nieuwe hoogte is " << hoogte << "." << endl;
+            break;
+
+            case 'b':
+            cout << "Kies de breedte van de puzzel." << endl;
+            breedte = leesGetal();
+            if (breedte > 20 || breedte < 0){
+                breedte = 5;
+            }cout << "Nieuwe breedte is " << breedte << "." << endl;
+            break;
+
+            case 'p':
+            cout << "Kies de percentage lampen die aan staat bij random puzzels. " << endl;
+            lamppercentage = leesGetal();
+            if (lamppercentage > 100 || lamppercentage < 0){
+                lamppercentage = 50;
+            }cout << "Nieuwe percentage van lampen die aan staan is " << lamppercentage << "." << endl;
+            break;
+
+            case 'k':
+            cout << "Kies een symbool voor lampen die aan staan." << endl;
+            symboolLampAan = optieInlezen();
+            cout << "Kies een symbool voor lampen die uit staan." << endl;
+            symboolLampUit = optieInlezen();
+            if (symboolLampAan == symboolLampUit){
+                symboolLampAan = 'X';
+                symboolLampUit = '.';
+                cout << "De symbolen die je hebt gekozen zijn hetzelfde, ze worden teruggezet naar de standaardsymbolen." << endl;
+            }
+            cout << "Nieuwe symbolen zijn " << symboolLampAan << " en "  << symboolLampUit << "." << endl;
+            break;
+
+            case 'd':{
+            cout << "Wil je de torus-modus aanzetten? (j/n)" << endl;
+            char t = optieInlezen();
+            t = maakKleineLetter(t);
+            if (t == 'j') {
+                torusModus = true;
+                cout << "Torus-modus staat nu aan." << endl; }
+            else {
+                torusModus = false;
+                cout << "Torus-modus staat nu uit." << endl;}
+            
+            break;}
+
+            case 'c': {
+            cout << "Kies de cursor-modus (0/1/2):" << endl;
+            cout << "0: Cursor wordt niet laten zien in de puzzel." << endl;
+            cout << "1: Cursor wordt laten zien met het aan-symbool." << endl;
+            cout << "2: Cursor wordt laten zien met het uit-symbool. " << endl;
+            int c = leesGetal();
+            if (c == 1) cursorSymbool = symboolLampAan;
+            else if (c == 2) cursorSymbool = symboolLampUit;
+            else cursorSymbool = ' ';
+            cout << "Nieuwe cursor-modus is " << c << "." << endl;
+            break;}
+    }
+}}
 
 int menu(){
     char keuze;
     while (true){
-        cout << "Kies een optie: s[C]hoon, [R]andom, [T]ekenen of [S]toppen." << endl;
+        cout << "Kies een optie: [P]arameters, p[U]zzelmenu en [T]ekenen of [S]toppen." << endl;
         keuze = optieInlezen();
         keuze = maakKleineLetter(keuze);
         switch (keuze){
@@ -71,28 +205,32 @@ int menu(){
             cout << "Je hebt optie S gekozen, Het programma wordt gestopt." << endl;
             return 1;
 
-            case 'c':
-            cout << "Je hebt optie C gekozen." << endl;
-            break;
+            case 'p':
+            cout << "Je hebt optie P gekozen." << endl;
+            while (!(parametermenu() == 0)) {
+                 cout  << "Je hebt nu een ander karakter gekozen. Je blijft nu in de subloop." << endl;
+            }break;
 
-            case 'r':
-            cout << "Je hebt optie R gekozen." << endl;
-            break;
+            case 'u':
+            cout << "Je hebt optie U gekozen." << endl;
+            while (!(puzzelmenu() == 0)) {
+                 cout  << "Je hebt nu een ander karakter gekozen. Je blijft nu in de subloop." << endl;
+            }break;
 
             case 't':
             cout << "Je hebt optie T gekozen." << endl;
-            while (!(submenu() == 0)) {
+            while (!(tekensubmenu() == 0)) {
                  cout  << "Je hebt nu een ander karakter gekozen. Je blijft nu in de subloop." << endl;
-            }
+            }break;
     }
-}}
-
+}
+}
 
 
 int main(){
     infoBlokje();
-    if (menu() == 1){
-        return 1;
+    menu();
+    return 0;
     }
-}
+
 
