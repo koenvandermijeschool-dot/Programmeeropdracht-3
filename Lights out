@@ -1,4 +1,5 @@
 // Deze code is gemaakt door Koen van der Mije(s4809033) en Dylan Kusters (s4912926).
+//Opdracht 3 van programmeermethoden: Lights out.
 
 #include <iostream>
 #include <fstream>
@@ -176,6 +177,69 @@ void cursorMenu(Puzzel& puzzel) {
         puzzel.drukaf();
     }
 }
+
+void schakelMeerdereCellen(Puzzel& puzzel, int coords[][2], int aantal) {
+    for (int i = 0; i < aantal; i++) {
+        int rij = coords[i][0];
+        int kolom = coords[i][1];
+        schakelCelOm(puzzel, rij, kolom);
+    }
+}
+
+
+void losOp(Puzzel& puzzel){
+    volg(puzzel); //hierna is alleen onderste rij niet opgelost
+    
+    int r = puzzel.hoogte - 1;//onderste rij 
+    int k[5];  //kolommen waar een zet op moet
+    int n = 0; //aantal kolommen
+    
+     if (puzzel.dePuzzel[r][0]==0 && puzzel.dePuzzel[r][1]==0 && puzzel.dePuzzel[r][2]==0 &&
+        puzzel.dePuzzel[r][3]==0 && puzzel.dePuzzel[r][4]==0) {
+        cout << "De puzzel is al opgelost!" << endl;
+        return;
+    }
+
+    //Alle patronen van de onderste rij die opgelost kunnen worden
+    // 0 = uit, 1 = aan
+    if (puzzel.dePuzzel[r][0]==0 && puzzel.dePuzzel[r][1]==0 && puzzel.dePuzzel[r][2]==0 &&
+        puzzel.dePuzzel[r][3]==1 && puzzel.dePuzzel[r][4]==1)
+    { k[0]=0; k[1]=2; k[2]=3; k[3]=4; n=4; }
+
+    else if (puzzel.dePuzzel[r][0]==0 && puzzel.dePuzzel[r][1]==0 && puzzel.dePuzzel[r][2]==1 &&
+             puzzel.dePuzzel[r][3]==0 && puzzel.dePuzzel[r][4]==0)
+    { k[0]=0; k[1]=1; k[2]=3; k[3]=4; n=4; }
+
+    else if (puzzel.dePuzzel[r][0]==0 && puzzel.dePuzzel[r][1]==1 && puzzel.dePuzzel[r][2]==0 &&
+             puzzel.dePuzzel[r][3]==0 && puzzel.dePuzzel[r][4]==1)
+    { k[0]=0; k[1]=1; k[2]=2; k[3]=3; n=4; }
+
+    else if (puzzel.dePuzzel[r][0]==0 && puzzel.dePuzzel[r][1]==1 && puzzel.dePuzzel[r][2]==1 &&
+             puzzel.dePuzzel[r][3]==1 && puzzel.dePuzzel[r][4]==0)
+    { k[0]=2; k[1]=3; k[2]=4; n=3; }
+    
+    else if (puzzel.dePuzzel[r][0]==1 && puzzel.dePuzzel[r][1]==0 && puzzel.dePuzzel[r][2]==0 &&
+             puzzel.dePuzzel[r][3]==1 && puzzel.dePuzzel[r][4]==0)
+    { k[0]=1; k[1]=2; k[2]=3; k[3]=4; n=4; }
+    
+    else if (puzzel.dePuzzel[r][0]==1 && puzzel.dePuzzel[r][1]==0 && puzzel.dePuzzel[r][2]==1 &&
+             puzzel.dePuzzel[r][3]==0 && puzzel.dePuzzel[r][4]==1)
+    { k[0]=1; k[1]=2; k[2]=4; n=3; }
+    
+    else if (puzzel.dePuzzel[r][0]==1 && puzzel.dePuzzel[r][1]==1 && puzzel.dePuzzel[r][2]==0 &&
+             puzzel.dePuzzel[r][3]==0 && puzzel.dePuzzel[r][4]==0)
+    { k[0]=0; k[1]=1; k[2]=2; k[3]=4; n=4; }
+    
+    else {
+        cout << "De puzzel is niet mogelijk." << endl;
+        return;
+    }
+    
+    for (int i = 0; i < n; i++){
+        schakelCelOm(puzzel, 0, k[i]);
+    }
+    volg(puzzel);
+}
         
 // TEKEN SUBMENU
 int tekensubmenu(Puzzel& puzzel) {
@@ -213,9 +277,32 @@ int puzzelmenu(Puzzel& puzzel){
             return 0;
             case 'v':
             volg(puzzel);
+            break;
+            case 'l':
+            losOp(puzzel);
+            break;
+            case 'a': // to do, vgm moet dit met de stappen die gedaan zijn in de genereer functie.
+            cout << "wow" << endl;
+            break;
+            case 'd': //Dit zou nog in een functie kunnen
+            cout << "Kies een de kolom (bv A of C): ";
+            char letter = maakKleineLetter(optieInlezen());
+            int kolom = (letter - 'a');           
+            cout << "Kies een de Rij  (bv 1 of 3): ";
+            int rij = leesGetal();                
+            int rijIndex = rij - 1; 
+   
+
+            if (rij <= 0 || rij > puzzel.hoogte || kolom < 0 || kolom >= puzzel.breedte) {
+                cout << "Ongeldige invoer.\n";
+            } else {
+                schakelCelOm(puzzel, rijIndex, kolom);
+            }
+            puzzel.drukaf();
+            break;}
         }
     }
-}
+
 
 // PARAMETERMENU
 int parametermenu(Puzzel& puzzel){
