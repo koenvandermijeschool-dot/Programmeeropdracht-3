@@ -79,8 +79,10 @@ int leesGetal() {
 
 //Maakt lamp aan of uit als het binnen de puzzel ligt.
 void veranderSymbool(Puzzel& puzzel, int rij, int kolom){
-        if (rij >= 0 && rij < puzzel.hoogte && kolom >= 0 && kolom < puzzel.breedte) {
-            puzzel.dePuzzel[rij][kolom] = (puzzel.dePuzzel[rij][kolom] == 1 ? 0 : 1); }
+    if (rij >= 0 && rij < puzzel.hoogte && kolom >= 0 && kolom < puzzel.breedte) {
+        int arrayRij = puzzel.hoogte - 1 - rij;  // Draai rij om
+        puzzel.dePuzzel[arrayRij][kolom] = (puzzel.dePuzzel[arrayRij][kolom] == 1 ? 0 : 1);
+    }
 }
 
 void schakelCelOm(Puzzel& puzzel, int rij, int kolom) {
@@ -124,9 +126,10 @@ int tekensubmenu(Puzzel& puzzel){
                 puzzel.maakrandom();
                 break;
             case 'o': {
-            cout << "Kies een cel (bv: A4 of D2): ";
+            cout << "Kies een de kolom (bv A of C): ";
             char letter = maakKleineLetter(optieInlezen());
             int kolom = (letter - 'a');           
+            cout << "Kies een de Rij  (bv 1 of 3): ";
             int rij = leesGetal();                
             int rijIndex = rij - 1; 
    
@@ -190,7 +193,11 @@ int parametermenu(Puzzel& puzzel){
             case 'd': {
                 cout << "Torus aan? (j/n) ";
                 char t = maakKleineLetter(optieInlezen());
-                puzzel.torusModus = (t=='j');
+                if (t =='j') {
+                    puzzel.torusModus = true;
+                    cout << "Torus-modus staat nu aan!" << endl;}
+                else{
+                    cout << "Torus-modus staat niet aan." << endl;}
                 break;
             }
             case 'c': {
