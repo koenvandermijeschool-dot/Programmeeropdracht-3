@@ -144,7 +144,7 @@ void Puzzel::genereer() {
     maakschoon();
     aantalZetten = 0;
 
-    cout << "Voer een moeilijkheidsgraad in. (0-100)" << endl;
+    cout << "Voer een moeilijkheidsgraad in. (0-25 geeft de beste resultaten.)" << endl;
     int moeilijkheidsgraad = leesGetal();
 
     if (moeilijkheidsgraad > 100) moeilijkheidsgraad = 100;
@@ -202,6 +202,11 @@ void schakelMeerdereCellen(Puzzel& puzzel, int coords[][2], int aantal) {
 void losOp(Puzzel& puzzel){
     volg(puzzel); //hierna is alleen onderste rij niet opgelost
     
+    if (puzzel.torusModus){
+        cout << "Torus-modus staat aan, hierdoor kan de puzzel niet opgelost worden. \n";
+        return;
+    }
+
     int r = puzzel.hoogte - 1;//onderste rij 
     int k[5];  //kolommen waar een zet op moet
     int n = 0; //aantal kolommen
@@ -291,6 +296,7 @@ int tekensubmenu(Puzzel& puzzel) {
         case 'g':
             puzzel.genereer();
             puzzel.drukaf();
+            break;
         case 'o':
         cursorMenu(puzzel);
             break;
