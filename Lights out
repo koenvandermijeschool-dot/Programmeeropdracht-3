@@ -1,259 +1,184 @@
 // Deze code is gemaakt door Koen van der Mije(s4809033) en Dylan Kusters (s4912926).
-// 
 
 #include <iostream>
 #include <fstream>
-using namespace std;
 #include <climits>
-#include "Puzzel.h"
+#include <vector>
 
-int hoogte = 5;
-int breedte = 5;
-int lamppercentage = 50;
-char symboolLampAan = 'X';
-char symboolLampUit = '.';
-char cursorSymbool;
-bool torusModus = false;
+using namespace std;
 
+class Puzzel {
+public:
+    int hoogte;
+    int breedte;
+    double percentage;
+    char symboolLampAan;
+    char symboolLampUit;
+    char cursorSymbool;
+    bool torusModus;
+    int randomNum;
+    vector<vector<int>> dePuzzel;
+
+    Puzzel(int h = 5, int b = 5, double p = 50.0, char a = 'X', char u = '.', char c = ' ', bool t = false);
+    int randomgetal();
+    void maakschoon();
+    void maakrandom();
+    void drukaf();
+    void setPercentage(double p);
+    void setHoogte(int h);
+    void setBreedte(int b);
+};
+
+// INFO BLOKJE
 void infoBlokje() {
-    cout << "Door Koen van der Mije(s4809033) en Dylan Kusters (s4912926) " << endl 
-    << "Begonnen met de studieinformatica aan de "
-    << "Universiteit Leiden in september 2025. "<< endl
-    << "Opdracht 3 voor het vak Programmeermethoden. " << endl 
-    << "Deadline : 10 november. " << endl 
-    << "Deze code doet blabla" << endl; }
-//maakt een grote letter een kleine letter.
-char maakKleineLetter(char a){
-    if (a >= 'A' && a <= 'Z'){
+    cout << "Door Koen van der Mije(s4809033) en Dylan Kusters (s4912926) " << endl
+         << "Begonnen met de studie Informatica aan de Universiteit Leiden in september 2025. " << endl
+         << "Opdracht 3 voor het vak Programmeermethoden. " << endl
+         << "Deadline : 10 november. " << endl
+         << "Deze code doet blabla" << endl;
+}
+
+// Maakt een grote letter een kleine letter.
+char maakKleineLetter(char a) {
+    if (a >= 'A' && a <= 'Z') {
         return a + ('a' - 'A');
-    }else{
+    } else {
         return a;
     }
 }
-//Leest een karakter in
-char optieInlezen(){
+
+// Leest een karakter in
+char optieInlezen() {
     char k = cin.get();
     while (k == '\n') {
         k = cin.get();
     }
-    cin.ignore(INT_MAX, '\n'); 
-    // Als er meerdere karakters zijn ingevoerd, pakt het alleen de eerste.
+    cin.ignore(INT_MAX, '\n');
     return k;
 }
-//Leest getallen in.
+
+// Leest een getal in (positief)
 int leesGetal() {
     int getalbuffer = 0;
     bool heeftCijfer = false;
     char k;
 
     while (true) {
-        if (!cin.get(k)) { 
+        if (!cin.get(k)) {
             break;
         }
-
         if (k >= '0' && k <= '9') {
             heeftCijfer = true;
             getalbuffer = (getalbuffer * 10) + (k - '0');
             if (getalbuffer > 9999) {
-                getalbuffer = 9999; 
+                getalbuffer = 9999;
             }
-        } 
-        else {
-            if (heeftCijfer) break;  
-            else continue;
+        } else {
+            if (heeftCijfer) break;
         }
     }
-
     return getalbuffer;
 }
 
-
-
-int tekensubmenu(Puzzel& puzzel){
+// TEKEN SUBMENU
+int tekensubmenu(Puzzel& puzzel) {
     char k;
-    while (true){
-        cout << "Tekenmenu: Kies een optie: [T}erug, s[C]hoon, [R]andom, [O]mschakelen of [G]enereer." << endl;
+    while (true) {
+        cout << "Tekenmenu: Kies een optie: [T]erug, s[C]hoon, [R]andom of [G]enereer." << endl;
         k = optieInlezen();
         k = maakKleineLetter(k);
-        switch (k){
-            case 'c':
-            cout << "Je hebt optie C gekozen" << endl;
+        switch (k) {
+        case 'c':
             puzzel.maakschoon();
             break;
-            case 'r':
-            cout << "Je hebt optie R gekozen" << endl;
+        case 'r':
             puzzel.maakrandom();
             break;
-            case 'o':
-            cout << "Je hebt optie O gekozen. " << endl;
-            break;
-            case 'g':
-            cout << "Je hebt optie G gekozen" << endl;
+        case 'g':
             puzzel.drukaf();
             break;
-            case 't': 
-            cout << "Je hebt optie T gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
+        case 't':
             return 0;
-
-            }
         }
     }
-int puzzelmenu(){
+}
+
+// PUZZELMENU (dummy)
+int puzzelmenu() {
     char k;
-    while (true){
+    while (true) {
         cout << "Puzzelmenu: Kies een optie: [T]erug, [V]olg, [L]os op, [A]fspelen of [D]oe zet." << endl;
         k = optieInlezen();
         k = maakKleineLetter(k);
-        switch (k){
-            case 't': 
-            cout << "Je hebt optie T gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
-            return 0;
-            case 'v':
-            cout << "Je hebt optie V gekozen." << endl;
-            break;
-            case 'l':
-            cout << "Je hebt optie L gekozen." << endl;
-            break;
-            case 'a':
-            cout << "Je hebt optie A gekozen." << endl;
-            break;
-            case 'd':
-            cout << "Je hebt optie D gekozen." << endl;
-            break;
-                }
-            }
+        if (k == 't') return 0;
+        cout << "Je hebt optie '" << k << "' gekozen. (Nog niet geïmplementeerd)" << endl;
+    }
 }
-int parametermenu(){
-    char k; 
-    while (true){
-        cout << "Parametermenu: Kies een optie: [T]erug, [H]oogte, [B]reedte, [P]ercentage lampen, [K]arakters, [D]oorlopend bord of [C]ursor-modus" << endl;
+
+// PARAMETERMENU
+int parametermenu(Puzzel& puzzel) {
+    char k;
+    while (true) {
+        cout << "Parametermenu: Kies een optie: [T]erug, [H]oogte, [B]reedte, [P]ercentage lampen" << endl;
         k = optieInlezen();
         k = maakKleineLetter(k);
-        switch(k){
-            case 't': 
-            cout << "Je hebt optie T gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
+        switch (k) {
+        case 't':
             return 0;
-
-            case 'h':
+        case 'h':
             cout << "Kies de hoogte van de puzzel." << endl;
-            hoogte = leesGetal();
-            if (hoogte > 20 || hoogte < 0){
-                hoogte = 5;
-            }cout << "Nieuwe hoogte is " << hoogte << "." << endl;
+            puzzel.setHoogte(leesGetal());
+            cout << "Nieuwe hoogte is " << puzzel.hoogte << "." << endl;
             break;
-
-            case 'b':
+        case 'b':
             cout << "Kies de breedte van de puzzel." << endl;
-            breedte = leesGetal();
-            if (breedte > 20 || breedte < 0){
-                breedte = 5;
-            }cout << "Nieuwe breedte is " << breedte << "." << endl;
+            puzzel.setBreedte(leesGetal());
+            cout << "Nieuwe breedte is " << puzzel.breedte << "." << endl;
             break;
-
-            case 'p':
-            cout << "Kies de percentage lampen die aan staat bij random puzzels. " << endl;
-            lamppercentage = leesGetal();
-            if (lamppercentage > 100 || lamppercentage < 0){
-                lamppercentage = 50;
-            }cout << "Nieuwe percentage van lampen die aan staan is " << lamppercentage << "." << endl;
+        case 'p':
+            cout << "Kies het percentage lampen die aan staan bij random puzzels. " << endl;
+            puzzel.setPercentage(leesGetal());
+            cout << "Nieuw percentage is " << puzzel.percentage << "%." << endl;
             break;
-
-            case 'k':
-            cout << "Kies een symbool voor lampen die aan staan." << endl;
-            symboolLampAan = optieInlezen();
-            cout << "Kies een symbool voor lampen die uit staan." << endl;
-            symboolLampUit = optieInlezen();
-            if (symboolLampAan == symboolLampUit){
-                symboolLampAan = 'X';
-                symboolLampUit = '.';
-                cout << "De symbolen die je hebt gekozen zijn hetzelfde, ze worden teruggezet naar de standaardsymbolen." << endl;
-            }
-            cout << "Nieuwe symbolen zijn " << symboolLampAan << " en "  << symboolLampUit << "." << endl;
-            break;
-
-            case 'd':{
-            cout << "Wil je de torus-modus aanzetten? (j/n)" << endl;
-            char t = optieInlezen();
-            t = maakKleineLetter(t);
-            if (t == 'j') {
-                torusModus = true;
-                cout << "Torus-modus staat nu aan." << endl; }
-            else {
-                torusModus = false;
-                cout << "Torus-modus staat nu uit." << endl;}
-            
-            break;}
-
-            case 'c': {
-            cout << "Kies de cursor-modus (0/1/2):" << endl;
-            cout << "0: Cursor wordt niet laten zien in de puzzel." << endl;
-            cout << "1: Cursor wordt laten zien met het aan-symbool." << endl;
-            cout << "2: Cursor wordt laten zien met het uit-symbool. " << endl;
-            int c = leesGetal();
-            if (c == 1) cursorSymbool = symboolLampAan;
-            else if (c == 2) cursorSymbool = symboolLampUit;
-            else cursorSymbool = ' ';
-            cout << "Nieuwe cursor-modus is " << c << "." << endl;
-            break;}
+        }
     }
-}}
+}
 
-int menu(Puzzel& puzzel){
+// HOOFDMENU
+int menu(Puzzel& puzzel) {
     char keuze;
-    while (true){
-        cout << "Kies een optie: [P]arameters, p[U]zzelmenu en [T]ekenen of [S]toppen." << endl;
+    while (true) {
+        cout << "Kies een optie: [P]arameters, p[U]zzelmenu, [T]ekenen of [S]toppen." << endl;
         keuze = optieInlezen();
         keuze = maakKleineLetter(keuze);
-        switch (keuze){
-            case 's':
-            cout << "Je hebt optie S gekozen, Het programma wordt gestopt." << endl;
+        switch (keuze) {
+        case 's':
             return 1;
-
-            case 'p':
-            cout << "Je hebt optie P gekozen." << endl;
-            while (!(parametermenu() == 0)) {
-                 cout  << "Je hebt nu een ander karakter gekozen. Je blijft nu in de subloop." << endl;
-            }break;
-
-            case 'u':
-            cout << "Je hebt optie U gekozen." << endl;
-            while (!(puzzelmenu() == 0)) {
-                 cout  << "Je hebt nu een ander karakter gekozen. Je blijft nu in de subloop." << endl;
-            }break;
-
-            case 't':
-            cout << "Je hebt optie T gekozen." << endl;
-            while ((tekensubmenu(puzzel) != 0)) {
-                cout << "Je blijft nu in het tekenmenu." << endl;
-            }break;
-            
+        case 'p':
+            while (parametermenu(puzzel) != 0);
+            break;
+        case 'u':
+            while (puzzelmenu() != 0);
+            break;
+        case 't':
+            while (tekensubmenu(puzzel) != 0);
+            break;
+        }
     }
 }
-}
 
-
-int main() {
-    infoBlokje();
-
-    Puzzel mijnPuzzel(hoogte, breedte, lamppercentage);
-    mijnPuzzel.maakrandom();
-    mijnPuzzel.drukaf();
-
-    menu(mijnPuzzel);
-
-    return 0;
+// PUZZELMETHODES
+Puzzel::Puzzel(int h, int b, double p, char a, char u, char c, bool t)
+    : hoogte(h), breedte(b), percentage(p), symboolLampAan(a),
+      symboolLampUit(u), cursorSymbool(c), torusModus(t) {
+    randomNum = randomgetal();
+    dePuzzel = vector<vector<int>>(hoogte, vector<int>(breedte, 0));
 }
 
 int Puzzel::randomgetal() {
     static int getal = 42;
     getal = (221 * getal + 1) % 1000;
     return getal;
-}
-
-Puzzel::Puzzel(int h, int b, double p)
-    : hoogte(h), breedte(b), percentage(p) {
-    randomNum = randomgetal();
-    dePuzzel = vector<vector<int>>(hoogte, vector<int>(breedte, 0));
 }
 
 void Puzzel::maakschoon() {
@@ -266,11 +191,10 @@ void Puzzel::maakschoon() {
 }
 
 void Puzzel::drukaf() {
-    cout << "Puzzel (" << hoogte << "x" << breedte << ", "
-         << percentage << "% aan):\n";
+    cout << "Puzzel (" << hoogte << "x" << breedte << ", " << percentage << "% aan):\n";
     for (int i = 0; i < hoogte; ++i) {
         for (int j = 0; j < breedte; ++j) {
-            cout << (dePuzzel[i][j] ? 'X' : '.') << " ";
+            cout << (dePuzzel[i][j] ? symboolLampAan : symboolLampUit) << " ";
         }
         cout << endl;
     }
@@ -279,25 +203,34 @@ void Puzzel::drukaf() {
 void Puzzel::maakrandom() {
     for (int i = 0; i < hoogte; ++i) {
         for (int j = 0; j < breedte; ++j) {
-            randomNum = randomgetal();
-            dePuzzel[i][j] = (randomNum % 100 < percentage) ? 1 : 0;
+            int getal = randomgetal() % 100;  // Geeft een waarde tussen 0 en 99
+            dePuzzel[i][j] = (getal < percentage) ? 1 : 0;
         }
     }
     cout << "Willekeurige puzzel gegenereerd.\n";
 }
 
 void Puzzel::setPercentage(double p) {
-    percentage = p;
+    percentage = (p >= 0 && p <= 100) ? p : 50;
 }
 
 void Puzzel::setHoogte(int h) {
-    hoogte = h;
+    hoogte = (h > 0 && h <= 20) ? h : 5;
     dePuzzel.resize(hoogte, vector<int>(breedte, 0));
 }
 
 void Puzzel::setBreedte(int b) {
-    breedte = b;
+    breedte = (b > 0 && b <= 20) ? b : 5;
     for (auto& rij : dePuzzel) {
         rij.resize(breedte, 0);
     }
+}
+
+int main() {
+    infoBlokje();
+    Puzzel mijnPuzzel;
+    mijnPuzzel.maakrandom();
+    mijnPuzzel.drukaf();
+    menu(mijnPuzzel);
+    return 0;
 }
