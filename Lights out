@@ -80,6 +80,55 @@ int leesGetal() {
     return getalbuffer;
 }
 
+//Maakt lamp aan of uit als het binnen de puzzel ligt.
+void veranderSymbool(Puzzel& puzzel, int rij, int kolom){
+    if (rij >= 0 && rij < puzzel.hoogte && kolom >= 0 && kolom < puzzel.breedte) {
+        int arrayRij = puzzel.hoogte - 1 - rij;  // Draai rij om
+        puzzel.dePuzzel[arrayRij][kolom] = (puzzel.dePuzzel[arrayRij][kolom] == 1 ? 0 : 1);
+    }
+}
+
+void schakelCelOm(Puzzel& puzzel, int rij, int kolom) {
+    veranderSymbool(puzzel, rij, kolom);
+    
+    int boven = rij - 1;
+    int onder = rij + 1;
+    int links = kolom - 1;
+    int rechts = kolom + 1;
+    
+    if (puzzel.torusModus) {
+        if (boven < 0) boven = puzzel.hoogte - 1;
+        if (onder >= puzzel.hoogte) onder = 0;
+        if (links < 0) links = puzzel.breedte - 1;
+        if (rechts >= puzzel.breedte) rechts = 0;
+        
+        // Schakel alle naburige cellen om (in torus modus altijd geldig)
+        veranderSymbool(puzzel, boven, kolom);
+        veranderSymbool(puzzel, onder, kolom);
+        veranderSymbool(puzzel, rij, links);
+        veranderSymbool(puzzel, rij, rechts);
+    } else {
+        // Zonder torus modus: alleen omschakelen als in puzzel
+        veranderSymbool(puzzel, boven, kolom);  
+        veranderSymbool(puzzel, onder, kolom);  
+        veranderSymbool(puzzel, rij, links);    
+        veranderSymbool(puzzel, rij, rechts);  
+    }
+}
+
+void volg(Puzzel& puzzel){
+    // Van boven naar beneden door de visuele puzzel (behalve onderste rij)
+    for (int rij = puzzel.hoogte - 1; rij > 0; rij--) {   
+        for (int kolom = 0; kolom < puzzel.breedte; kolom++) {
+            int arrayRij = puzzel.hoogte - 1 - rij;  // Converteer visuele rij naar array index
+            
+            if (puzzel.dePuzzel[arrayRij][kolom] == 1){  // lamp aan?
+                schakelCelOm(puzzel, rij - 1, kolom);    // zet op cel ERONDER (rij - 1 in visuele coördinaten)
+                puzzel.drukaf();
+            }
+        }
+    }
+}
 // TEKEN SUBMENU
 int tekensubmenu(Puzzel& puzzel) {
     char k;
@@ -102,16 +151,18 @@ int tekensubmenu(Puzzel& puzzel) {
         }
     }
 }
-
-// PUZZELMENU (dummy)
-int puzzelmenu() {
+//Puzzelmenu
+int puzzelmenu(Puzzel& puzzel){
     char k;
-    while (true) {
-        cout << "Puzzelmenu: Kies een optie: [T]erug, [V]olg, [L]os op, [A]fspelen of [D]oe zet." << endl;
-        k = optieInlezen();
-        k = maakKleineLetter(k);
-        if (k == 't') return 0;
-        cout << "Je hebt optie '" << k << "' gekozen. (Nog niet geïmplementeerd)" << endl;
+    while (true){
+        cout << "Puzzelmenu: [T]erug, [V]olg, [L]os op, [A]fspelen, [D]oe zet.\n";
+        k = maakKleineLetter(optieInlezen());
+        switch(k){
+            case 't':
+            return 0;
+            case 'v':
+            volg(puzzel);
+        }
     }
 }
 
@@ -158,7 +209,7 @@ int menu(Puzzel& puzzel) {
             while (parametermenu(puzzel) != 0);
             break;
         case 'u':
-            while (puzzelmenu() != 0);
+            while (puzzelmenu(puzzel) != 0);
             break;
         case 't':
             while (tekensubmenu(puzzel) != 0);
