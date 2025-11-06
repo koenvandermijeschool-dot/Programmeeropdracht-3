@@ -5,6 +5,7 @@
 #include <fstream>
 using namespace std;
 #include <climits>
+#include "Puzzel.h"
 
 int hoogte = 5;
 int breedte = 5;
@@ -68,7 +69,7 @@ int leesGetal() {
 
 
 
-int tekensubmenu(){
+int tekensubmenu(Puzzel& puzzel){
     char k;
     while (true){
         cout << "Tekenmenu: Kies een optie: [T}erug, s[C]hoon, [R]andom, [O]mschakelen of [G]enereer." << endl;
@@ -77,23 +78,26 @@ int tekensubmenu(){
         switch (k){
             case 'c':
             cout << "Je hebt optie C gekozen" << endl;
+            puzzel.maakschoon();
             break;
             case 'r':
             cout << "Je hebt optie R gekozen" << endl;
             break;
+            puzzel.maakrandom();
             case 'o':
-            cout << "Je hebt optie T gekozen. " << endl;
+            cout << "Je hebt optie O gekozen. " << endl;
             break;
             case 'g':
             cout << "Je hebt optie G gekozen" << endl;
+            puzzel.drukaf();
             break;
             case 't': 
             cout << "Je hebt optie T gekozen. Je wordt nu terug naar het hoofdmenu gestuurd." << endl;
             return 0;
 
-                }
             }
-}
+        }
+    }
 int puzzelmenu(){
     char k;
     while (true){
@@ -194,7 +198,7 @@ int parametermenu(){
     }
 }}
 
-int menu(){
+int menu(Puzzel& puzzel){
     char keuze;
     while (true){
         cout << "Kies een optie: [P]arameters, p[U]zzelmenu en [T]ekenen of [S]toppen." << endl;
@@ -219,18 +223,24 @@ int menu(){
 
             case 't':
             cout << "Je hebt optie T gekozen." << endl;
-            while (!(tekensubmenu() == 0)) {
-                 cout  << "Je hebt nu een ander karakter gekozen. Je blijft nu in de subloop." << endl;
+            while ((tekensubmenu(puzzel) != 0)) {
+                cout << "Je blijft nu in het tekenmenu." << endl;
             }break;
+            
     }
 }
 }
 
 
-int main(){
+int main() {
     infoBlokje();
-    menu();
-    return 0;
-    }
 
+    Puzzel mijnPuzzel(hoogte, breedte, lamppercentage);
+    mijnPuzzel.maakrandom();
+    mijnPuzzel.drukaf();
+
+    menu(mijnPuzzel);
+
+    return 0;
+}
 
