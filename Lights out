@@ -17,9 +17,11 @@ public:
     char cursorSymbool;
     bool torusModus;
     int randomNum;
+    int cursorKolom;
+    int cursorRij;
     vector<vector<int>> dePuzzel;
 
-    Puzzel(int h = 5, int b = 5, double p = 50.0, char a = 'X', char u = '.', char c = ' ', bool t = false);
+    Puzzel(int h = 5, int b = 5, double p = 50.0, char a = 'X', char u = '.', char c = ' ', bool t = false, int k = 1, int r = 1);
     int randomgetal();
     void maakschoon();
     void maakrandom();
@@ -129,11 +131,57 @@ void volg(Puzzel& puzzel){
         }
     }
 }
+
+void genereer(Puzzel& puzzel){
+    // Maak puzzel leeg
+    for (int i = 0; i < puzzel.hoogte; i++) {       
+        for (int j = 0; j < puzzel.breedte; j++) {   
+            puzzel.dePuzzel[i][j] = 0;
+        }
+    }
+    
+    cout << "Voer een moeilijkheidsgraad in. (0-25 voor beste resultaten)" << endl;
+    int moeilijkheidsgraad = leesGetal();
+    
+    for (int a = 0; a < moeilijkheidsgraad; a++) {
+        int randomkolom = puzzel.randomgetal() % puzzel.breedte;
+        int randomrij = puzzel.randomgetal() % puzzel.hoogte;
+        schakelCelOm(puzzel, randomrij, randomkolom);
+    }
+}
+
+void cursorMenu(Puzzel& puzzel) {
+    cout << "Gebruik W A S D om de cursor te bewegen en T om te stoppen.\n";
+    
+    char invoer;
+    puzzel.drukaf();
+    while (true) {
+        invoer = maakKleineLetter(optieInlezen());
+        switch (invoer) {
+        case 'w':
+            if (puzzel.cursorRij < puzzel.hoogte - 1) puzzel.cursorRij++;
+            break;
+        case 's':
+            if (puzzel.cursorRij > 0) puzzel.cursorRij--;
+            break;
+        case 'a':
+            if (puzzel.cursorKolom > 0) puzzel.cursorKolom--;
+            break;
+        case 'd':
+            if (puzzel.cursorKolom < puzzel.breedte - 1) puzzel.cursorKolom++;
+            break;
+        case 't':
+            return;
+        }
+        puzzel.drukaf();
+    }
+}
+        
 // TEKEN SUBMENU
 int tekensubmenu(Puzzel& puzzel) {
     char k;
     while (true) {
-        cout << "Tekenmenu: Kies een optie: [T]erug, s[C]hoon, [R]andom of [G]enereer." << endl;
+        cout << "Tekenmenu: Kies een optie: [T]erug, s[C]hoon, t[O]ggle, [R]andom of [G]enereer." << endl;
         k = optieInlezen();
         k = maakKleineLetter(k);
         switch (k) {
@@ -144,7 +192,10 @@ int tekensubmenu(Puzzel& puzzel) {
             puzzel.maakrandom();
             break;
         case 'g':
+            genereer(puzzel);
             puzzel.drukaf();
+        case 'o':
+        cursorMenu(puzzel);
             break;
         case 't':
             return 0;
@@ -167,30 +218,54 @@ int puzzelmenu(Puzzel& puzzel){
 }
 
 // PARAMETERMENU
-int parametermenu(Puzzel& puzzel) {
-    char k;
-    while (true) {
-        cout << "Parametermenu: Kies een optie: [T]erug, [H]oogte, [B]reedte, [P]ercentage lampen" << endl;
-        k = optieInlezen();
-        k = maakKleineLetter(k);
-        switch (k) {
-        case 't':
-            return 0;
-        case 'h':
-            cout << "Kies de hoogte van de puzzel." << endl;
-            puzzel.setHoogte(leesGetal());
-            cout << "Nieuwe hoogte is " << puzzel.hoogte << "." << endl;
-            break;
-        case 'b':
-            cout << "Kies de breedte van de puzzel." << endl;
-            puzzel.setBreedte(leesGetal());
-            cout << "Nieuwe breedte is " << puzzel.breedte << "." << endl;
-            break;
-        case 'p':
-            cout << "Kies het percentage lampen die aan staan bij random puzzels. " << endl;
-            puzzel.setPercentage(leesGetal());
-            cout << "Nieuw percentage is " << puzzel.percentage << "%." << endl;
-            break;
+int parametermenu(Puzzel& puzzel){
+    char k; 
+    while (true){
+        cout << "Parametermenu: [T]erug, [H]oogte, [B]reedte, [P]ercentage, [K]arakters, [D]oorloop, [C]ursor.\n";
+        k = maakKleineLetter(optieInlezen());
+        switch(k){
+            case 't': return 0;
+
+            case 'h': {
+                cout << "Nieuwe hoogte: ";
+                puzzel.setHoogte(leesGetal());
+                break;
+            }
+            case 'b': {
+                cout << "Nieuwe breedte: ";
+                puzzel.setBreedte(leesGetal());
+                break;
+            }
+            case 'p': {
+                cout << "Percentage lampen: ";
+                puzzel.setPercentage(leesGetal());
+                break;
+            }
+            case 'k':
+                cout << "Symbool aan: ";
+                puzzel.symboolLampAan = optieInlezen();
+                cout << "Symbool uit: ";
+                puzzel.symboolLampUit = optieInlezen();
+                break;
+
+            case 'd': {
+                cout << "Torus aan? (j/n) ";
+                char t = maakKleineLetter(optieInlezen());
+                if (t =='j') {
+                    puzzel.torusModus = true;
+                    cout << "Torus-modus staat nu aan!" << endl;}
+                else{
+                    cout << "Torus-modus staat niet aan." << endl;}
+                break;
+            }
+            case 'c': {
+                cout << "Cursor-modus (0/1/2): ";
+                int mod = leesGetal();
+                if (mod == 1) puzzel.cursorSymbool = puzzel.symboolLampAan;
+                else if (mod == 2) puzzel.cursorSymbool = puzzel.symboolLampUit;
+                else puzzel.cursorSymbool = ' ';
+                break;
+            }
         }
     }
 }
@@ -219,15 +294,17 @@ int menu(Puzzel& puzzel) {
 }
 
 // PUZZELMETHODES
-Puzzel::Puzzel(int h, int b, double p, char a, char u, char c, bool t)
+Puzzel::Puzzel(int h, int b, double p, char a, char u, char c, bool t, int r, int k)
     : hoogte(h), breedte(b), percentage(p), symboolLampAan(a),
-      symboolLampUit(u), cursorSymbool(c), torusModus(t) {
+      symboolLampUit(u), cursorSymbool(c), torusModus(t), cursorRij(r), cursorKolom(k) {
     randomNum = randomgetal();
     dePuzzel = vector<vector<int>>(hoogte, vector<int>(breedte, 0));
+    cursorRij = 0;
+    cursorKolom = 0;
 }
 
 int Puzzel::randomgetal() {
-    static int getal = 42;
+    static int getal = 42;       
     getal = (221 * getal + 1) % 1000;
     return getal;
 }
@@ -245,7 +322,16 @@ void Puzzel::drukaf() {
     cout << "Puzzel (" << hoogte << "x" << breedte << ", " << percentage << "% aan):\n";
     for (int i = 0; i < hoogte; ++i) {
         for (int j = 0; j < breedte; ++j) {
-            cout << (dePuzzel[i][j] ? symboolLampAan : symboolLampUit) << " ";
+            // Converteer array index naar visuele rij positie
+            int visueelRij = hoogte - 1 - i;
+            
+            if (visueelRij == cursorRij && j == cursorKolom) {
+                // Als de cursor hier staat, toon het cursorSymbool
+                cout << "[" << (dePuzzel[i][j] ? symboolLampAan : symboolLampUit) << "]";
+            } else {
+                // Toon normale lamp status
+                cout << (dePuzzel[i][j] ? symboolLampAan : symboolLampUit) << " ";
+            }
         }
         cout << endl;
     }
