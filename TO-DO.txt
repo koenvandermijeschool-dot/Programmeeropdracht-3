@@ -1,0 +1,12 @@
+TO DO:
+Cursor menu moet met penmodus werken van parametermenu (0/1/2)
+Verslag(Kan ook zondag/maandag)
+Commentaar.
+Infoblokje en //info aan de top.
+
+
+Sommige functies zien er wat chatGPT'erig uit.
+Sommige functies zouden member functies kunnen worden (bijvoorbeeld losOp()).
+Functies kunnen ingekort worden.
+Max aantal karakters per line.
+Sommige functies zouden member functies kunnen worden (bijvoorbeeld losOp()).
