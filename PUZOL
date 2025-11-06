@@ -1,0 +1,60 @@
+#include "Puzzel.h"
+
+int Puzzel::randomgetal() {
+    static int getal = 42;
+    getal = (221 * getal + 1) % 1000;
+    return getal;
+}
+
+Puzzel::Puzzel(int h, int b, double p)
+    : hoogte(h), breedte(b), percentage(p) {
+    randomNum = randomgetal();
+    dePuzzel = vector<vector<int>>(hoogte, vector<int>(breedte, 0));
+}
+
+void Puzzel::maakschoon() {
+    for (int i = 0; i < hoogte; ++i) {
+        for (int j = 0; j < breedte; ++j) {
+            dePuzzel[i][j] = 0;
+        }
+    }
+    cout << "Puzzel is leeggemaakt.\n";
+}
+
+void Puzzel::drukaf() {
+    cout << "Puzzel (" << hoogte << "x" << breedte << ", "
+         << percentage << "% aan):\n";
+    for (int i = 0; i < hoogte; ++i) {
+        for (int j = 0; j < breedte; ++j) {
+            cout << (dePuzzel[i][j] ? 'X' : '.') << " ";
+        }
+        cout << endl;
+    }
+}
+
+void Puzzel::maakrandom() {
+    for (int i = 0; i < hoogte; ++i) {
+        for (int j = 0; j < breedte; ++j) {
+            randomNum = randomgetal();
+            dePuzzel[i][j] = (randomNum % 100 < percentage) ? 1 : 0;
+        }
+    }
+    cout << "Willekeurige puzzel gegenereerd.\n";
+}
+
+void Puzzel::setPercentage(double p) {
+    percentage = p;
+}
+
+void Puzzel::setHoogte(int h) {
+    hoogte = h;
+    dePuzzel.resize(hoogte, vector<int>(breedte, 0));
+}
+
+void Puzzel::setBreedte(int b) {
+    breedte = b;
+    for (auto& rij : dePuzzel) {
+        rij.resize(breedte, 0);
+    }
+}
+
