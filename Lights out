@@ -1,5 +1,6 @@
 // Deze code is gemaakt door Koen van der Mije(s4809033) en Dylan Kusters (s4912926).
 //Opdracht 3 van programmeermethoden: Lights out.
+//Compiler: g++
 
 #include <iostream>
 #include <fstream>
@@ -48,7 +49,11 @@ void infoBlokje() {
          << "Begonnen met de studie Informatica aan de Universiteit Leiden in september 2025. " << endl
          << "Opdracht 3 voor het vak Programmeermethoden. " << endl
          << "Deadline : 10 november. " << endl
-         << "Deze code doet blabla" << endl; //TODO
+         << "Compiler: g++" << endl
+         << "Deze code laat de gebruiker het spel Light Out spelen." << endl
+         << "Hierbij kan de speler gebruik maken van 3 submenu's: " << endl
+         << "Parametermenu, tekenmenu en het puzzelmenu." << endl 
+         << "De gebruiker kan verschillende acties doen om de puzzel te maken en op te lossen." << endl;
 }
 
 // Maakt van een grote letter een kleine letter d.m.v. de ASCII tabel.
