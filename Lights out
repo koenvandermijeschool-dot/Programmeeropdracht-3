@@ -43,6 +43,7 @@ public:
     void verwerkCursorActie();
 };
 
+
 // info blokje voor de gebruiker
 void infoBlokje() {
     cout << "Door Koen van der Mije(s4809033) en Dylan Kusters (s4912926) " << endl
@@ -56,6 +57,7 @@ void infoBlokje() {
          << "De gebruiker kan verschillende acties doen om de puzzel te maken en op te lossen." << endl;
 }
 
+
 // Maakt van een grote letter een kleine letter d.m.v. de ASCII tabel.
 char maakKleineLetter(char a) {
     if (a >= 'A' && a <= 'Z') {
@@ -64,6 +66,7 @@ char maakKleineLetter(char a) {
         return a;
     }
 }
+
 
 // Leest een karakter in die niet een spatie is
 char optieInlezen() {
@@ -74,6 +77,7 @@ char optieInlezen() {
     cin.ignore(INT_MAX, '\n'); 
     return k;
 }
+
 
 // Leest een getal in (positief)
 int leesGetal() {
@@ -100,6 +104,7 @@ int leesGetal() {
     return getalbuffer;
 }
 
+
 //Wisselt lamp naar aan of uit toestadn als het binnen de puzzel ligt.
 void veranderSymbool(Puzzel& puzzel, int rij, int kolom){
     //Controleer of positie binnen de grenzen 
@@ -112,6 +117,8 @@ void veranderSymbool(Puzzel& puzzel, int rij, int kolom){
         }
     }
 }
+
+
 //Schakelt een cel en zijn buren om 
 void schakelCelOm(Puzzel& puzzel, int rij, int kolom) {
     veranderSymbool(puzzel, rij, kolom); // Schakelt cel om.
@@ -139,6 +146,7 @@ void schakelCelOm(Puzzel& puzzel, int rij, int kolom) {
     veranderSymbool(puzzel, rij, rechts);  
     }
 
+
 //Eerste stap van puzzel oplossen, alleen onderste rij blijft over.
 void volg(Puzzel& puzzel){
     // Van boven naar beneden door de puzzel (behalve onderste rij)
@@ -153,29 +161,8 @@ void volg(Puzzel& puzzel){
         }
     }
 }
-//Maakt een puzzel door random zetten te doen op een leeg veld.
-void Puzzel::genereer() {
-    maakschoon(); // Begin met leeg veld
-    aantalZetten = 0; //reset het aantal zetten
 
-    cout << "Voer een moeilijkheidsgraad in. (0-25 geeft de beste resultaten.)" << endl;
-    int moeilijkheidsgraad = leesGetal();
 
-    if (moeilijkheidsgraad > 100) {
-        moeilijkheidsgraad = 100;}  //Max 100 zetten, omdat dit max is van aantalzetten array 
-    //Doe een random zet gebaseerd op moeilijksgraad
-    for (int a = 0; a < moeilijkheidsgraad; a++) { 
-        int randomkolom = randomgetal() % breedte;
-        int randomrij = randomgetal() % hoogte;
-        schakelCelOm(*this, randomrij, randomkolom); 
-
-        // Zetten opslaan die gebruikt zijn in het generen van de puzzel.
-        oplossing[aantalZetten][0] = randomrij;
-        oplossing[aantalZetten][1] = randomkolom;
-        aantalZetten++;
-    } 
-    
-}
 //Gebruiker wordt gevraagd voor coordinaten om een zet te doen in de puzzel
 void doeZet(Puzzel& puzzel ){
     puzzel.drukaf(); //Druk puzzel van tevoren af
@@ -197,7 +184,7 @@ void doeZet(Puzzel& puzzel ){
 
 
 void cursorMenu(Puzzel& puzzel) {
-    char invoer;
+    char invoer; //de invoer van de gebruiker
     cout << "Gebruik W A S D om de cursor te bewegen en T om te stoppen.\n";
 
     puzzel.drukaf(true);  // eerste weergave met cursor
@@ -207,29 +194,28 @@ void cursorMenu(Puzzel& puzzel) {
 
         switch (invoer) {
         case 'w':
-            if (puzzel.cursorRij < puzzel.hoogte - 1) puzzel.cursorRij++;
+            if (puzzel.cursorRij < puzzel.hoogte - 1) puzzel.cursorRij++; //zodat de cursor niet buiten het scherm gaat
             break;
         case 's':
-            if (puzzel.cursorRij > 0) puzzel.cursorRij--;
+            if (puzzel.cursorRij > 0) puzzel.cursorRij--; //zodat de cursor niet buiten het scherm gaat
             break;
         case 'a':
-            if (puzzel.cursorKolom > 0) puzzel.cursorKolom--;
+            if (puzzel.cursorKolom > 0) puzzel.cursorKolom--; //zodat de cursor niet buiten het scherm gaat
             break;
         case 'd':
-            if (puzzel.cursorKolom < puzzel.breedte - 1) puzzel.cursorKolom++;
+            if (puzzel.cursorKolom < puzzel.breedte - 1) puzzel.cursorKolom++; //zodat de cursor niet buiten het scherm gaat
             break;
         case 't':
             puzzel.drukaf(false); // laatste weergave zonder cursor
             return;
         }
 
-        // Pas tegel aan volgens de huidige cursor-mode (lamp aan/uit of niets)
-        puzzel.verwerkCursorActie();
+        puzzel.verwerkCursorActie(); // Pas tegel aan volgens de huidige cursor-mode
 
-        // Herteken met cursor
-        puzzel.drukaf(true);
+        puzzel.drukaf(true); // weergave met cursor
     }
 }
+
 
 //Gebruikt light chasing methode om een 5x5 puzzel op te lossen
 void losOp(Puzzel& puzzel){
@@ -280,34 +266,17 @@ void losOp(Puzzel& puzzel){
         puzzel.dePuzzel[r][3]==0 && puzzel.dePuzzel[r][4]==0){
              k[0]=3; n=1; }
     
-    else { //Als er een ander pattroon is, dan is de puzzel niet mogelijk met deze methode.
+    else { //Als er een ander patroon is, dan is de puzzel niet mogelijk met deze methode.
         cout << "De puzzel is niet mogelijk met de light chasing methode." << endl;
         return;
     }
     
-    for (int i = 0; i < n; i++){ //Doe de bijbehorende zet (die bij het pattroon hoort)
+    for (int i = 0; i < n; i++){ //Doe de bijbehorende zet (die bij het patroon hoort)
         schakelCelOm(puzzel, 0, k[i]);
     }
     volg(puzzel); //Hierna zou puzzel opgelost moeten zijn.
 }
-//Speelt de oplossing af die in de genereer functie is opgeslagen
-void Puzzel::speelOplossingAf() {
-    if (aantalZetten == 0) { 
-        cout << "Er zijn geen opgeslagen zetten om af te spelen.\n";
-        return;//Als er geen zetten zijn opgeslagen wordt functie geskipt.
-    }
-    cout << "Oplossing wordt nu afgespeelt:\n";
-    //speelt elke zet af en laat de tussenstappen zien 
-    for (int i = 0; i < aantalZetten; i++) {
-        int rij = oplossing[i][0];
-        int kolom = oplossing[i][1];
 
-        schakelCelOm(*this, rij, kolom);
-        drukaf();
-    }
-
-    cout << "Oplossing is afgespeeld.\n";
-}
 
 // Tekensubmenu wordt geprint in de terminal waarbij de gebruiker alle keuzes in dit menu kan maken.
 int tekensubmenu(Puzzel& puzzel) {
@@ -336,6 +305,8 @@ int tekensubmenu(Puzzel& puzzel) {
         }
     }
 }
+
+
 // Puzzelsubmenu wordt geprint in de terminal waarbij de gebruiker alle keuzes in dit menu kan maken.
 int puzzelmenu(Puzzel& puzzel){
     char k;
@@ -360,6 +331,7 @@ int puzzelmenu(Puzzel& puzzel){
         }
     }
 }
+
 
 // Parametersubmenu wordt geprint in de terminal waarbij de gebruiker alle keuzes in dit menu kan maken.
 int parametermenu(Puzzel& puzzel){
@@ -415,6 +387,7 @@ int parametermenu(Puzzel& puzzel){
     }
 }
 
+
 // Menu wordt geprint in de terminal waarbij de gebruiker keuzes in dit menu kan maken.
 int menu(Puzzel& puzzel) {
     char keuze;
@@ -438,6 +411,7 @@ int menu(Puzzel& puzzel) {
     }
 }
 
+
 //Constructor
 Puzzel::Puzzel(int h, int b, double p, char a, char u, char c, bool t, int r, int k)
     : hoogte(h), breedte(b), percentage(p), symboolLampAan(a),
@@ -445,12 +419,16 @@ Puzzel::Puzzel(int h, int b, double p, char a, char u, char c, bool t, int r, in
     randomNum = randomgetal();
     maakschoon(); 
 }
+
+
 //Kiest een random getal 0-9
 int Puzzel::randomgetal() {
     static int getal = 42;       
     getal = (221 * getal + 1) % 1000;
     return getal;
 }
+
+
 //Maakt de puzzel leeg
 void Puzzel::maakschoon() {
     aantalZetten = 0; 
@@ -462,7 +440,52 @@ void Puzzel::maakschoon() {
     cout << "Puzzel is leeggemaakt.\n";
 }
 
-//
+
+//Speelt de oplossing af die in de genereer functie is opgeslagen
+void Puzzel::speelOplossingAf() {
+    if (aantalZetten == 0) { 
+        cout << "Er zijn geen opgeslagen zetten om af te spelen.\n";
+        return;//Als er geen zetten zijn opgeslagen wordt functie geskipt.
+    }
+    cout << "Oplossing wordt nu afgespeelt:\n";
+    //speelt elke zet af en laat de tussenstappen zien 
+    for (int i = 0; i < aantalZetten; i++) {
+        int rij = oplossing[i][0];
+        int kolom = oplossing[i][1];
+
+        schakelCelOm(*this, rij, kolom);
+        drukaf();
+    }
+
+    cout << "Oplossing is afgespeeld.\n";
+}
+
+
+//Maakt een puzzel door random zetten te doen op een leeg veld.
+void Puzzel::genereer() {
+    maakschoon(); // Begin met leeg veld
+    aantalZetten = 0; //reset het aantal zetten
+
+    cout << "Voer een moeilijkheidsgraad in. (0-25 geeft de beste resultaten.)" << endl;
+    int moeilijkheidsgraad = leesGetal();
+
+    if (moeilijkheidsgraad > 100) {
+        moeilijkheidsgraad = 100;}  //Max 100 zetten, omdat dit max is van aantalzetten array 
+    //Doe een random zet gebaseerd op moeilijksgraad
+    for (int a = 0; a < moeilijkheidsgraad; a++) { 
+        int randomkolom = randomgetal() % breedte;
+        int randomrij = randomgetal() % hoogte;
+        schakelCelOm(*this, randomrij, randomkolom); 
+
+        // Zetten opslaan die gebruikt zijn in het generen van de puzzel.
+        oplossing[aantalZetten][0] = randomrij;
+        oplossing[aantalZetten][1] = randomkolom;
+        aantalZetten++;
+    } 
+}
+
+
+// doet de uitvoering van de functie gebaseerd op het cursorSymbool
 void Puzzel::verwerkCursorActie() {
     if (cursorSymbool == symboolLampAan) {
         dePuzzel[hoogte - 1 - cursorRij][cursorKolom] = true;
@@ -472,8 +495,10 @@ void Puzzel::verwerkCursorActie() {
     }
 }
 
+
 // Print de puzzel
 void Puzzel::drukaf(bool toonCursor) {
+    cout << "Puzzel: "<< endl;
     for (int i = 0; i < hoogte; ++i) {
         for (int j = 0; j < breedte; ++j) {
             int visueelRij = hoogte - 1 - i;
@@ -493,6 +518,7 @@ void Puzzel::drukaf(bool toonCursor) {
     }
 }
 
+
 // Maak een willekeurige puzzel
 void Puzzel::maakrandom() {
     for (int i = 0; i < hoogte; ++i) {
@@ -509,6 +535,7 @@ void Puzzel::maakrandom() {
     cout << "Willekeurige puzzel gegenereerd.\n";
 }
 
+
 // Stel hoogte in
 void Puzzel::setHoogte(int h) {
     if (h > 0 && h <= MaxGrootte) {
@@ -517,6 +544,7 @@ void Puzzel::setHoogte(int h) {
         hoogte = 5;
     }
 }
+
 
 // Stel breedte in
 void Puzzel::setBreedte(int b) {
@@ -527,6 +555,7 @@ void Puzzel::setBreedte(int b) {
     }
 }
 
+
 // Stel percentage in
 void Puzzel::setPercentage(double p) {
     if (p >= 0 && p <= 100) {
@@ -535,6 +564,7 @@ void Puzzel::setPercentage(double p) {
         percentage = 50;
     }
 }
+
 
 int main() {
     infoBlokje();
