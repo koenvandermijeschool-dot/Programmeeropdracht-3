@@ -10,81 +10,86 @@ using namespace std;
 
 class Puzzel {
 public:
-    static const int MaxGrootte = 20; //max hoogte van de puzzel
+    static const int MaxGrootte = 20; //max hoogte en breedte van de puzzel
     
 
-    int hoogte;
-    int breedte;
-    double percentage;
-    char symboolLampAan;
-    char symboolLampUit;
-    char cursorSymbool;
-    bool torusModus;
-    int randomNum;
-    int cursorKolom;
-    int cursorRij;
-    int dePuzzel[MaxGrootte][MaxGrootte];
-    int oplossing[100][2];
-    int aantalZetten;
+    int hoogte; //hoogte van de puzzel
+    int breedte; //breedte van de puzzel
+    double percentage; //percentage lampen aan in de puzzel
+    char symboolLampAan; //het symbool in de puzzel als de lamp aan staat
+    char symboolLampUit; //het symbool in de puzzel als de lamp uit staat
+    char cursorSymbool; //het symbool in de puzzel waar de cursor is
+    bool torusMode; //of de torusMode aan staat of niet
+    int randomNum; //een getal die random gegenereerd wordt
+    int cursorKolom; //in welke kolom de cursor zich bevindt
+    int cursorRij; //in welke rij de cursor zich bevindt
+    int dePuzzel[MaxGrootte][MaxGrootte]; //de puzzel zelf
+    int oplossing[100][2]; //een array waarin de oplossing bewaard wordt -
+    //  met coordinaat en de hoeveelste zet
+    int aantalZetten; //het totaal aantal zetten door de gebruiker
 
-    Puzzel(int h = 5, int b = 5, double p = 50.0, char a = 'X', char u = '.', char c = ' ', bool t = false, int k = 1, int r = 1);
+    Puzzel(int h = 5, int b = 5, double p = 50.0, char a = 'X', char u = '.',
+         char c = ' ', bool t = false, int k = 1, int r = 1);
     int randomgetal();
     void maakschoon();
     void maakrandom();
-    void drukaf();
+    void drukaf(bool toonCursor = false);
     void setPercentage(double p);
     void setHoogte(int h);
     void setBreedte(int b);
     void genereer();
     void speelOplossingAf();
+    void verwerkCursorActie();
 };
 
-// INFO BLOKJE
+// info blokje voor de gebruiker
 void infoBlokje() {
     cout << "Door Koen van der Mije(s4809033) en Dylan Kusters (s4912926) " << endl
          << "Begonnen met de studie Informatica aan de Universiteit Leiden in september 2025. " << endl
          << "Opdracht 3 voor het vak Programmeermethoden. " << endl
          << "Deadline : 10 november. " << endl
-         << "Deze code doet blabla" << endl;
+         << "Deze code doet blabla" << endl; //TODO
 }
 
-// Maakt een grote letter een kleine letter.
+// Maakt van een grote letter een kleine letter d.m.v. de ASCII tabel.
 char maakKleineLetter(char a) {
     if (a >= 'A' && a <= 'Z') {
         return a + ('a' - 'A');
-    } else {
+    } else { 
         return a;
     }
 }
 
-// Leest een karakter in
+// Leest een karakter in die niet een spatie is
 char optieInlezen() {
     char k = cin.get();
-    while (k == '\n') {
+    while (k == '\n') { //als het een spatie is neem dan het volgende karakter
         k = cin.get();
     }
-    cin.ignore(INT_MAX, '\n');
+    cin.ignore(INT_MAX, '\n'); 
     return k;
 }
 
 // Leest een getal in (positief)
 int leesGetal() {
-    int getalbuffer = 0;
-    bool heeftCijfer = false;
-    char k;
+    int getalbuffer = 0; //het getal wat is ingelezen
+    bool heeftCijfer = false; //check of het een getal is of niet
+    char k; //ingelezen karakter
 
     while (true) {
-        if (!cin.get(k)) {
+        if (!cin.get(k)) { //als er geen karakter is stopt de loop
             break;
         }
-        if (k >= '0' && k <= '9') {
+        if (k >= '0' && k <= '9') { //als het karakter een getal is wordt deze toegevoegd
             heeftCijfer = true;
             getalbuffer = (getalbuffer * 10) + (k - '0');
-            if (getalbuffer > 9999) {
+            if (getalbuffer > 9999) { //het getal wordt op 9999 gezet als deze groter is
                 getalbuffer = 9999;
             }
         } else {
-            if (heeftCijfer) break;
+            if (heeftCijfer){
+                break;
+            } 
         }
     }
     return getalbuffer;
@@ -111,7 +116,7 @@ void schakelCelOm(Puzzel& puzzel, int rij, int kolom) {
     int links = kolom - 1;
     int rechts = kolom + 1;
     //Als torusmode aanstaat 
-    if (puzzel.torusModus) {
+    if (puzzel.torusMode) {
          //verander posities van buurcellen als gekozen cel op de rand is
         if (boven < 0) { 
             boven = puzzel.hoogte - 1;}
@@ -169,10 +174,10 @@ void Puzzel::genereer() {
 //Gebruiker wordt gevraagd voor coordinaten om een zet te doen in de puzzel
 void doeZet(Puzzel& puzzel ){
     puzzel.drukaf(); //Druk puzzel van tevoren af
-    cout << "Kies een de kolom (bv A of C): "; //Vraag gebruiker voor cel
+    cout << "Kies een kolom (bv A of C): "; //Vraag gebruiker voor cel
             char letter = maakKleineLetter(optieInlezen());
             int kolom = (letter - 'a');           
-            cout << "Kies een de Rij  (bv 1 of 3): ";
+            cout << "Kies een Rij  (bv 1 of 3): ";
             int rij = leesGetal();                
             int rijIndex = rij - 1; 
    
@@ -187,12 +192,14 @@ void doeZet(Puzzel& puzzel ){
 
 
 void cursorMenu(Puzzel& puzzel) {
-    cout << "Gebruik W A S D om de cursor te bewegen en T om te stoppen.\n";
-    
     char invoer;
-    puzzel.drukaf();
+    cout << "Gebruik W A S D om de cursor te bewegen en T om te stoppen.\n";
+
+    puzzel.drukaf(true);  // eerste weergave met cursor
+
     while (true) {
         invoer = maakKleineLetter(optieInlezen());
+
         switch (invoer) {
         case 'w':
             if (puzzel.cursorRij < puzzel.hoogte - 1) puzzel.cursorRij++;
@@ -207,16 +214,23 @@ void cursorMenu(Puzzel& puzzel) {
             if (puzzel.cursorKolom < puzzel.breedte - 1) puzzel.cursorKolom++;
             break;
         case 't':
+            puzzel.drukaf(false); // laatste weergave zonder cursor
             return;
         }
-        puzzel.drukaf();
+
+        // Pas tegel aan volgens de huidige cursor-mode (lamp aan/uit of niets)
+        puzzel.verwerkCursorActie();
+
+        // Herteken met cursor
+        puzzel.drukaf(true);
     }
 }
+
 //Gebruikt light chasing methode om een 5x5 puzzel op te lossen
 void losOp(Puzzel& puzzel){
     volg(puzzel); //hierna is alleen onderste rij niet opgelost
     
-    if (puzzel.torusModus){ //Kan niet oplossen met torus-mode
+    if (puzzel.torusMode){ //Kan niet oplossen met torus-mode
         cout << "Torus-mode staat aan, hierdoor kan de puzzel niet opgelost worden. \n";
         return;
     }
@@ -378,14 +392,14 @@ int parametermenu(Puzzel& puzzel){
                 cout << "Torus aan? (j/n) ";
                 char t = maakKleineLetter(optieInlezen());
                 if (t =='j') {
-                    puzzel.torusModus = true;
-                    cout << "Torus-modus staat nu aan!" << endl;}
+                    puzzel.torusMode = true;
+                    cout << "Torus-mode staat nu aan!" << endl;}
                 else{
-                    cout << "Torus-modus staat niet aan." << endl;}
+                    cout << "Torus-mode staat niet aan." << endl;}
                 break;
             }
-            case 'c': { //Gebruiker kan cursor modus veranderen.
-                cout << "Cursor-modus (0/1/2): ";
+            case 'c': { //Gebruiker kan cursor mode veranderen.
+                cout << "Cursor-mode (0/1/2): ";
                 int mod = leesGetal();
                 if (mod == 1) puzzel.cursorSymbool = puzzel.symboolLampAan;
                 else if (mod == 2) puzzel.cursorSymbool = puzzel.symboolLampUit;
@@ -422,7 +436,7 @@ int menu(Puzzel& puzzel) {
 //Constructor
 Puzzel::Puzzel(int h, int b, double p, char a, char u, char c, bool t, int r, int k)
     : hoogte(h), breedte(b), percentage(p), symboolLampAan(a),
-      symboolLampUit(u), cursorSymbool(c), torusModus(t), cursorRij(r), cursorKolom(k) {
+      symboolLampUit(u), cursorSymbool(c), torusMode(t), cursorRij(r), cursorKolom(k) {
     randomNum = randomgetal();
     maakschoon(); 
 }
@@ -443,17 +457,27 @@ void Puzzel::maakschoon() {
     cout << "Puzzel is leeggemaakt.\n";
 }
 
+//
+void Puzzel::verwerkCursorActie() {
+    if (cursorSymbool == symboolLampAan) {
+        dePuzzel[hoogte - 1 - cursorRij][cursorKolom] = true;
+    } 
+    else if (cursorSymbool == symboolLampUit) {
+        dePuzzel[hoogte - 1 - cursorRij][cursorKolom] = false;
+    }
+}
+
 // Print de puzzel
-void Puzzel::drukaf() {
-    cout << "Puzzel (" << hoogte << "x" << breedte << ", " << percentage << "% aan):\n";
+void Puzzel::drukaf(bool toonCursor) {
     for (int i = 0; i < hoogte; ++i) {
         for (int j = 0; j < breedte; ++j) {
             int visueelRij = hoogte - 1 - i;
-            if (visueelRij == cursorRij && j == cursorKolom) {
-                cout << "[" << (dePuzzel[i][j] ? symboolLampAan : symboolLampUit) << "]";
-            } else {
+
+            // Toon cursor alleen als toonCursor == true
+            if (toonCursor && visueelRij == cursorRij && j == cursorKolom)
+                cout << "* ";
+            else
                 cout << (dePuzzel[i][j] ? symboolLampAan : symboolLampUit) << " ";
-            }
         }
         cout << endl;
     }
