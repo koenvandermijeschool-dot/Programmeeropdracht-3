@@ -482,7 +482,12 @@ void Puzzel::drukaf(bool toonCursor) {
             if (toonCursor && visueelRij == cursorRij && j == cursorKolom)
                 cout << "* ";
             else
-                cout << (dePuzzel[i][j] ? symboolLampAan : symboolLampUit) << " ";
+                if (dePuzzel[i][j]) {
+                    cout << symboolLampAan << " ";
+                } 
+                else {
+                    cout << symboolLampUit << " ";
+                    }
         }
         cout << endl;
     }
@@ -493,8 +498,13 @@ void Puzzel::maakrandom() {
     for (int i = 0; i < hoogte; ++i) {
         for (int j = 0; j < breedte; ++j) {
             int getal = randomgetal() % 100;
-            dePuzzel[i][j] = (getal < percentage) ? 1 : 0;
-        }
+            if (getal < percentage) {
+                dePuzzel[i][j] = 1;
+            } 
+            else {
+                dePuzzel[i][j] = 0;
+            }
+         }
     }
     cout << "Willekeurige puzzel gegenereerd.\n";
 }
